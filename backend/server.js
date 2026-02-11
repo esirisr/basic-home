@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
@@ -8,34 +9,24 @@ connectDB();
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// --- ROUTES ---
-
-// 1. Root Route (Fixes "Cannot GET /")
-app.get('/', (req, res) => {
-    res.status(200).json({
-        success: true,
-        message: "Student Management API is live!",
-        endpoints: {
-            students: "/api/students"
-        }
-    });
-});
-
-// 2. API Routes
+// 1. API Routes
 app.use('/api/students', require('./routes/studentRoutes'));
 
-// 3. 404 Catch-all (For any route that doesn't exist)
-app.use((req, res) => {
-    res.status(404).json({ success: false, message: "Route not found" });
+// 2. Serve Frontend Static Files
+// This looks inside your 'frontend' folder for the production build
+const frontendBuildPath = path.join(__dirname, 'frontend', 'dist'); 
+app.use(express.static(frontendBuildPath));
+
+// 3. Catch-all Route
+// Directs all non-API requests to your React app
+app.get('*', (req, res) => {
+    res.sendFile(path.join(frontendBuildPath, 'index.html'));
 });
 
-// Server Configuration
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
