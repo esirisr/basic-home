@@ -16,18 +16,17 @@ app.use(express.json());
 app.use('/api/students', require('./routes/studentRoutes'));
 
 // 2. Serve Frontend Static Files
-// If your build files are in 'dist', leave this as 'dist'. 
-// If your error said they are directly in 'frontend', remove the 'dist' part.
-const frontendBuildPath = path.join(__dirname, 'frontend', 'dist'); 
+// Added '..' to step OUT of the backend folder first
+const frontendBuildPath = path.join(__dirname, '..', 'frontend'); 
 
 app.use(express.static(frontendBuildPath));
 
-// DEBUG LOG: This will print in Railway logs so you can verify the path
+// DEBUG LOG: This will help you see the final path in Railway logs
 console.log("Static files being served from:", frontendBuildPath);
 
 // 3. Catch-all Route
 app.get('*', (req, res) => {
-    // We use path.resolve to ensure the absolute path is correct on the Linux server
+    // This now looks for /app/frontend/index.html directly
     const indexPath = path.resolve(frontendBuildPath, 'index.html');
     
     res.sendFile(indexPath, (err) => {
@@ -38,7 +37,7 @@ app.get('*', (req, res) => {
     });
 });
 
-const PORT = process.env.PORT || 8080; // Railway often prefers 8080, but 5000 is usually fine
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
