@@ -1,0 +1,7 @@
+
+            .container { padding: 20px; max-width: 800px; margin: auto; font-family: sans-serif; }
+            .student-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+            .student-table { width: 100%; border-collapse: collapse; }
+            .student-table th, .student-table td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            .student-table th { background-color: #f4f4f4; }
+        
