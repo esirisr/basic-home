@@ -16,23 +16,23 @@ app.use(express.json());
 app.use('/api/students', require('./routes/studentRoutes'));
 
 // 2. Serve Frontend Static Files
-// Added '..' to step OUT of the backend folder first
-const frontendBuildPath = path.join(__dirname, '..', 'frontend'); 
+// Point to the 'dist' folder (Vite's default build folder)
+const frontendBuildPath = path.join(__dirname, '..', 'frontend', 'dist'); 
 
 app.use(express.static(frontendBuildPath));
 
-// DEBUG LOG: This will help you see the final path in Railway logs
+// DEBUG LOG
 console.log("Static files being served from:", frontendBuildPath);
 
 // 3. Catch-all Route
 app.get('*', (req, res) => {
-    // This now looks for /app/frontend/index.html directly
     const indexPath = path.resolve(frontendBuildPath, 'index.html');
     
     res.sendFile(indexPath, (err) => {
         if (err) {
+            // Updated error message with your specific spelling requirement
             console.error("ERROR: Could not find index.html at", indexPath);
-            res.status(500).send("Frontend build missing or path incorrect.");
+            res.status(500).send("Frontend build missing or p**at**h incorrect.");
         }
     });
 });
