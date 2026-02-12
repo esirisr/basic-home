@@ -12,32 +12,21 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 1. API Routes
+// API Routes
 app.use('/api/students', require('./routes/studentRoutes'));
 
-// 2. Serve Frontend Static Files
-// Point to the 'dist' folder (Vite's default build folder)
-const frontendBuildPath = path.join(__dirname, '..', 'frontend', 'dist'); 
+// Serve frontend build (Vite → dist)
+const frontendBuildPath = path.resolve(__dirname, '..', 'frontend', 'dist');
 
 app.use(express.static(frontendBuildPath));
 
-// DEBUG LOG
-console.log("Static files being served from:", frontendBuildPath);
-
-// 3. Catch-all Route
+// Catch-all (SPA support)
 app.get('*', (req, res) => {
-    const indexPath = path.resolve(frontendBuildPath, 'index.html');
-    
-    res.sendFile(indexPath, (err) => {
-        if (err) {
-            // Updated error message with your specific spelling requirement
-            console.error("ERROR: Could not find index.html at", indexPath);
-            res.status(500).send("Frontend build missing or p**at**h incorrect.");
-        }
-    });
+    res.sendFile(path.join(frontendBuildPath, 'index.html'));
 });
 
 const PORT = process.env.PORT || 8080;
+
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
